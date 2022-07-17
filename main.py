@@ -64,16 +64,31 @@ def go(config: DictConfig):
             )
 
         if "data_check" in active_steps:
-            ##################
-            # Implement here #
-            ##################
-            pass
+            # Test the data against a reference data set
+            _ = mlflow.run(
+                os.path.join(hydra.utils.get_original_cwd(), "src", "data_check"),
+                "main",
+                parameters={
+                    "kl_threshold": config["data_check"]["kl_threshold"],
+                    "csv": "clean_sample.csv:latest",
+                    "ref": "clean_sample.csv:reference",
+                    "min_price": config["etl"]["min_price"],
+                    "max_price": config["etl"]["max_price"]
+                },
+            )
 
         if "data_split" in active_steps:
-            ##################
-            # Implement here #
-            ##################
-            pass
+            # Download file and load in W&B
+            _ = mlflow.run(
+                f"{config['main']['components_repository']}/train_test_split",
+                "main",
+                parameters={
+                    "sample": config["etl"]["sample"],
+                    "artifact_name": "sample.csv",
+                    "artifact_type": "raw_data",
+                    "artifact_description": "Raw file as downloaded"
+                },
+            )
 
         if "train_random_forest" in active_steps:
 
