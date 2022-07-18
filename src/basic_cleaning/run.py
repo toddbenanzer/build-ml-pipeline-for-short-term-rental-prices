@@ -19,9 +19,6 @@ def go(args):
     run.config.update(args)
 
     # Download input artifact. This will also log that this script is using this
-    # particular version of the artifact
-    # artifact_local_path = run.use_artifact(args.input_artifact).file()
-
     logger.info("Downloading artifact")
     local_path = run.use_artifact(args.input_artifact).file()
     df = pd.read_csv(local_path)
@@ -33,6 +30,10 @@ def go(args):
     df = df[idx].copy()
     # Convert last_review to datetime
     df['last_review'] = pd.to_datetime(df['last_review'])
+    # drop out-of-scope geocodes
+    idx = df['longitude'].between(-74.25, -73.50) & df['latitude'].between(40.5, 41.2)
+    df = df[idx].copy()
+    # save file to W&B
     save_filename = "clean_sample.csv"
     df.to_csv(save_filename, index=False)
 
