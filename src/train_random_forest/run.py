@@ -120,7 +120,6 @@ def go(args):
         description="Random Forest pipeline export",
     )
     artifact.add_dir(export_path)
-
     run.log_artifact(artifact)
 
     # Make sure the artifact is uploaded before the temp dir
