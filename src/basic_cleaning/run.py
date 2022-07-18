@@ -53,7 +53,6 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Clean the data")
 
-
     parser.add_argument(
         "--input_artifact", 
         type=str,
